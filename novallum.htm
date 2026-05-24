@@ -1,0 +1,845 @@
+<!DOCTYPE html>
+<html lang="ca-valencia">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>novallum — Sense bateria, sense límits</title>
+    <link rel="preconnect" href="https://fonts.googleapis.com">
+    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+    <link href="https://fonts.googleapis.com/css2?family=Inter:wght@300;400;600;800&family=Orbitron:wght@500;700;900&display=swap" rel="stylesheet">
+    <style>
+        :root {
+            --bg-primary: #050505;
+            --bg-secondary: #0a0a0a;
+            --bg-card: rgba(20, 20, 25, 0.7);
+            --neon-blue: #00f0ff;
+            --neon-blue-dim: rgba(0, 240, 255, 0.15);
+            --lime: #ccff00;
+            --lime-dim: rgba(204, 255, 0, 0.15);
+            --text-primary: #f0f0f0;
+            --text-secondary: #a0a0a0;
+            --border: rgba(255, 255, 255, 0.08);
+        }
+
+        * {
+            margin: 0;
+            padding: 0;
+            box-sizing: border-box;
+        }
+
+        html {
+            scroll-behavior: smooth;
+        }
+
+        body {
+            font-family: 'Inter', sans-serif;
+            background-color: var(--bg-primary);
+            color: var(--text-primary);
+            overflow-x: hidden;
+            line-height: 1.6;
+        }
+
+        /* Animación de entrada */
+        @keyframes fadeInUp {
+            from {
+                opacity: 0;
+                transform: translateY(40px);
+            }
+            to {
+                opacity: 1;
+                transform: translateY(0);
+            }
+        }
+
+        @keyframes pulseGlow {
+            0%, 100% {
+                box-shadow: 0 0 20px var(--neon-blue-dim), 0 0 40px var(--lime-dim);
+            }
+            50% {
+                box-shadow: 0 0 30px var(--neon-blue-dim), 0 0 60px var(--lime-dim);
+            }
+        }
+
+        @keyframes float {
+            0%, 100% { transform: translateY(0px); }
+            50% { transform: translateY(-15px); }
+        }
+
+        @keyframes gridMove {
+            0% { background-position: 0 0; }
+            100% { background-position: 50px 50px; }
+        }
+
+        /* HERO SECTION */
+        .hero {
+            min-height: 100vh;
+            display: flex;
+            flex-direction: column;
+            align-items: center;
+            justify-content: center;
+            text-align: center;
+            position: relative;
+            padding: 2rem;
+            overflow: hidden;
+        }
+
+        .hero::before {
+            content: '';
+            position: absolute;
+            top: 0;
+            left: 0;
+            right: 0;
+            bottom: 0;
+            background: 
+                radial-gradient(circle at 20% 50%, rgba(0, 240, 255, 0.08) 0%, transparent 50%),
+                radial-gradient(circle at 80% 20%, rgba(204, 255, 0, 0.06) 0%, transparent 50%),
+                repeating-linear-gradient(45deg, transparent, transparent 35px, rgba(255,255,255,0.015) 35px, rgba(255,255,255,0.015) 70px);
+            z-index: 0;
+        }
+
+        .hero-content {
+            position: relative;
+            z-index: 1;
+            max-width: 900px;
+            animation: fadeInUp 1.2s ease-out;
+        }
+
+        .logo-container {
+            margin-bottom: 1.5rem;
+        }
+
+        .logo-icon {
+            width: 80px;
+            height: 80px;
+            margin: 0 auto 1rem;
+            background: linear-gradient(135deg, var(--neon-blue), var(--lime));
+            border-radius: 20px;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            box-shadow: 0 0 30px rgba(0, 240, 255, 0.3), 0 0 60px rgba(204, 255, 0, 0.15);
+            animation: pulseGlow 3s infinite;
+        }
+
+        .logo-icon svg {
+            width: 45px;
+            height: 45px;
+            fill: #000;
+        }
+
+        .brand-name {
+            font-family: 'Orbitron', sans-serif;
+            font-size: clamp(3rem, 10vw, 6rem);
+            font-weight: 900;
+            letter-spacing: -2px;
+            background: linear-gradient(135deg, var(--neon-blue), var(--lime));
+            -webkit-background-clip: text;
+            -webkit-text-fill-color: transparent;
+            background-clip: text;
+            text-shadow: 0 0 60px rgba(0, 240, 255, 0.3);
+            line-height: 1.1;
+        }
+
+        .tagline {
+            font-family: 'Orbitron', sans-serif;
+            font-size: clamp(1rem, 3vw, 1.5rem);
+            font-weight: 500;
+            color: var(--text-secondary);
+            margin-top: 1rem;
+            letter-spacing: 4px;
+            text-transform: uppercase;
+        }
+
+        .tagline .highlight {
+            color: var(--neon-blue);
+        }
+
+        .tagline .highlight-lime {
+            color: var(--lime);
+        }
+
+        .hero-image {
+            margin-top: 3rem;
+            width: 100%;
+            max-width: 600px;
+            height: 350px;
+            border-radius: 24px;
+            overflow: hidden;
+            position: relative;
+            border: 1px solid var(--border);
+            box-shadow: 0 20px 60px rgba(0, 0, 0, 0.8), inset 0 0 30px rgba(0, 240, 255, 0.05);
+            animation: float 6s ease-in-out infinite;
+        }
+
+        .hero-image img {
+            width: 100%;
+            height: 100%;
+            object-fit: cover;
+            opacity: 0.9;
+        }
+
+        .hero-image::after {
+            content: '';
+            position: absolute;
+            inset: 0;
+            background: linear-gradient(to top, rgba(5,5,5,0.9) 0%, transparent 40%);
+        }
+
+        .scroll-indicator {
+            position: absolute;
+            bottom: 2rem;
+            left: 50%;
+            transform: translateX(-50%);
+            color: var(--text-secondary);
+            font-size: 0.8rem;
+            letter-spacing: 2px;
+            text-transform: uppercase;
+            animation: fadeInUp 2s ease-out 1s both;
+        }
+
+        .scroll-indicator::after {
+            content: '↓';
+            display: block;
+            text-align: center;
+            margin-top: 0.5rem;
+            font-size: 1.2rem;
+            color: var(--neon-blue);
+        }
+
+        /* NAVIGATION */
+        nav {
+            position: fixed;
+            top: 0;
+            left: 0;
+            right: 0;
+            z-index: 100;
+            padding: 1.2rem 2rem;
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            background: rgba(5, 5, 5, 0.8);
+            backdrop-filter: blur(20px);
+            border-bottom: 1px solid var(--border);
+            transition: all 0.3s ease;
+        }
+
+        nav .nav-brand {
+            font-family: 'Orbitron', sans-serif;
+            font-weight: 700;
+            font-size: 1.2rem;
+            background: linear-gradient(135deg, var(--neon-blue), var(--lime));
+            -webkit-background-clip: text;
+            -webkit-text-fill-color: transparent;
+            background-clip: text;
+        }
+
+        nav .nav-links {
+            display: flex;
+            gap: 2rem;
+            list-style: none;
+        }
+
+        nav .nav-links a {
+            color: var(--text-secondary);
+            text-decoration: none;
+            font-size: 0.85rem;
+            font-weight: 600;
+            letter-spacing: 1px;
+            text-transform: uppercase;
+            transition: color 0.3s ease;
+        }
+
+        nav .nav-links a:hover {
+            color: var(--neon-blue);
+        }
+
+        /* SECTIONS GENERAL */
+        section {
+            padding: 6rem 2rem;
+            position: relative;
+        }
+
+        .section-title {
+            font-family: 'Orbitron', sans-serif;
+            font-size: clamp(1.8rem, 5vw, 3rem);
+            font-weight: 700;
+            text-align: center;
+            margin-bottom: 1rem;
+            letter-spacing: -1px;
+        }
+
+        .section-subtitle {
+            text-align: center;
+            color: var(--text-secondary);
+            max-width: 600px;
+            margin: 0 auto 4rem;
+            font-size: 1.05rem;
+        }
+
+        /* CATALEG SECTION */
+        .catalog {
+            background: var(--bg-secondary);
+            position: relative;
+        }
+
+        .catalog::before {
+            content: '';
+            position: absolute;
+            top: 0;
+            left: 0;
+            right: 0;
+            height: 1px;
+            background: linear-gradient(90deg, transparent, var(--neon-blue), var(--lime), transparent);
+        }
+
+        .products-grid {
+            display: grid;
+            grid-template-columns: repeat(auto-fit, minmax(320px, 1fr));
+            gap: 2.5rem;
+            max-width: 1100px;
+            margin: 0 auto;
+        }
+
+        .product-card {
+            background: var(--bg-card);
+            border: 1px solid var(--border);
+            border-radius: 24px;
+            padding: 2.5rem;
+            position: relative;
+            overflow: hidden;
+            transition: all 0.4s ease;
+            backdrop-filter: blur(10px);
+        }
+
+        .product-card::before {
+            content: '';
+            position: absolute;
+            top: 0;
+            left: 0;
+            right: 0;
+            height: 3px;
+            background: linear-gradient(90deg, var(--neon-blue), var(--lime));
+            opacity: 0;
+            transition: opacity 0.4s ease;
+        }
+
+        .product-card:hover {
+            transform: translateY(-8px);
+            border-color: rgba(0, 240, 255, 0.2);
+            box-shadow: 0 20px 50px rgba(0, 240, 255, 0.1), 0 0 0 1px rgba(204, 255, 0, 0.1);
+        }
+
+        .product-card:hover::before {
+            opacity: 1;
+        }
+
+        .product-badge {
+            display: inline-block;
+            padding: 0.3rem 0.8rem;
+            border-radius: 20px;
+            font-size: 0.7rem;
+            font-weight: 700;
+            text-transform: uppercase;
+            letter-spacing: 1px;
+            margin-bottom: 1.2rem;
+        }
+
+        .badge-urban {
+            background: var(--neon-blue-dim);
+            color: var(--neon-blue);
+            border: 1px solid rgba(0, 240, 255, 0.3);
+        }
+
+        .badge-pro {
+            background: var(--lime-dim);
+            color: var(--lime);
+            border: 1px solid rgba(204, 255, 0, 0.3);
+        }
+
+        .product-image {
+            width: 100%;
+            height: 220px;
+            border-radius: 16px;
+            overflow: hidden;
+            margin-bottom: 1.5rem;
+            background: linear-gradient(135deg, rgba(0,240,255,0.05), rgba(204,255,0,0.05));
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            border: 1px solid var(--border);
+        }
+
+        .product-image img {
+            width: 100%;
+            height: 100%;
+            object-fit: cover;
+            transition: transform 0.5s ease;
+        }
+
+        .product-card:hover .product-image img {
+            transform: scale(1.05);
+        }
+
+        .product-name {
+            font-family: 'Orbitron', sans-serif;
+            font-size: 1.5rem;
+            font-weight: 700;
+            margin-bottom: 0.5rem;
+            letter-spacing: -0.5px;
+        }
+
+        .product-card:nth-child(1) .product-name {
+            color: var(--neon-blue);
+        }
+
+        .product-card:nth-child(2) .product-name {
+            color: var(--lime);
+        }
+
+        .product-desc {
+            color: var(--text-secondary);
+            font-size: 0.95rem;
+            line-height: 1.7;
+            margin-bottom: 1.5rem;
+        }
+
+        .product-features {
+            list-style: none;
+            margin-bottom: 2rem;
+        }
+
+        .product-features li {
+            padding: 0.4rem 0;
+            font-size: 0.9rem;
+            color: var(--text-primary);
+            display: flex;
+            align-items: center;
+            gap: 0.6rem;
+        }
+
+        .product-features li::before {
+            content: '✓';
+            color: var(--lime);
+            font-weight: bold;
+            font-size: 0.9rem;
+        }
+
+        .product-price-row {
+            display: flex;
+            align-items: center;
+            justify-content: space-between;
+            margin-top: auto;
+        }
+
+        .price {
+            font-family: 'Orbitron', sans-serif;
+            font-size: 2rem;
+            font-weight: 900;
+        }
+
+        .product-card:nth-child(1) .price {
+            color: var(--neon-blue);
+        }
+
+        .product-card:nth-child(2) .price {
+            color: var(--lime);
+        }
+
+        .price-currency {
+            font-size: 1.2rem;
+            font-weight: 600;
+        }
+
+        .buy-btn {
+            padding: 0.9rem 2rem;
+            border-radius: 12px;
+            border: none;
+            font-family: 'Inter', sans-serif;
+            font-weight: 700;
+            font-size: 0.95rem;
+            cursor: pointer;
+            transition: all 0.3s ease;
+            text-transform: uppercase;
+            letter-spacing: 1px;
+        }
+
+        .buy-btn-urban {
+            background: linear-gradient(135deg, var(--neon-blue), #0099aa);
+            color: #000;
+            box-shadow: 0 4px 20px rgba(0, 240, 255, 0.3);
+        }
+
+        .buy-btn-urban:hover {
+            transform: scale(1.05);
+            box-shadow: 0 6px 30px rgba(0, 240, 255, 0.5);
+        }
+
+        .buy-btn-pro {
+            background: linear-gradient(135deg, var(--lime), #99cc00);
+            color: #000;
+            box-shadow: 0 4px 20px rgba(204, 255, 0, 0.3);
+        }
+
+        .buy-btn-pro:hover {
+            transform: scale(1.05);
+            box-shadow: 0 6px 30px rgba(204, 255, 0, 0.5);
+        }
+
+        /* CONTACT / FOOTER */
+        .contact {
+            background: linear-gradient(to bottom, var(--bg-secondary), #000);
+            text-align: center;
+            padding: 6rem 2rem 3rem;
+            position: relative;
+        }
+
+        .contact::before {
+            content: '';
+            position: absolute;
+            top: 0;
+            left: 0;
+            right: 0;
+            height: 1px;
+            background: linear-gradient(90deg, transparent, var(--lime), var(--neon-blue), transparent);
+        }
+
+        .contact-slogan {
+            font-family: 'Orbitron', sans-serif;
+            font-size: clamp(1.2rem, 4vw, 2rem);
+            font-weight: 700;
+            margin-bottom: 3rem;
+            letter-spacing: 2px;
+            text-transform: uppercase;
+        }
+
+        .contact-slogan span {
+            color: var(--neon-blue);
+        }
+
+        .contact-slogan .lime-word {
+            color: var(--lime);
+        }
+
+        .contact-grid {
+            display: flex;
+            flex-wrap: wrap;
+            justify-content: center;
+            gap: 3rem;
+            max-width: 900px;
+            margin: 0 auto 4rem;
+        }
+
+        .contact-item {
+            display: flex;
+            flex-direction: column;
+            align-items: center;
+            gap: 0.6rem;
+        }
+
+        .contact-icon {
+            width: 50px;
+            height: 50px;
+            border-radius: 14px;
+            background: var(--bg-card);
+            border: 1px solid var(--border);
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            font-size: 1.3rem;
+            margin-bottom: 0.3rem;
+        }
+
+        .contact-label {
+            font-size: 0.75rem;
+            text-transform: uppercase;
+            letter-spacing: 2px;
+            color: var(--text-secondary);
+            font-weight: 600;
+        }
+
+        .contact-value {
+            font-size: 1rem;
+            color: var(--text-primary);
+            font-weight: 500;
+        }
+
+        .contact-value a {
+            color: var(--text-primary);
+            text-decoration: none;
+            transition: color 0.3s ease;
+        }
+
+        .contact-value a:hover {
+            color: var(--neon-blue);
+        }
+
+        .address-box {
+            max-width: 500px;
+            margin: 0 auto 3rem;
+            padding: 1.5rem 2rem;
+            background: var(--bg-card);
+            border: 1px solid var(--border);
+            border-radius: 16px;
+            backdrop-filter: blur(10px);
+        }
+
+        .address-box .contact-value {
+            line-height: 1.8;
+        }
+
+        .footer-bottom {
+            border-top: 1px solid var(--border);
+            padding-top: 2rem;
+            color: var(--text-secondary);
+            font-size: 0.85rem;
+        }
+
+        .footer-brand {
+            font-family: 'Orbitron', sans-serif;
+            font-weight: 700;
+            font-size: 1rem;
+            background: linear-gradient(135deg, var(--neon-blue), var(--lime));
+            -webkit-background-clip: text;
+            -webkit-text-fill-color: transparent;
+            background-clip: text;
+            margin-bottom: 0.5rem;
+        }
+
+        /* DECORATIVE ELEMENTS */
+        .glow-orb {
+            position: absolute;
+            border-radius: 50%;
+            filter: blur(80px);
+            opacity: 0.15;
+            pointer-events: none;
+        }
+
+        .orb-1 {
+            width: 400px;
+            height: 400px;
+            background: var(--neon-blue);
+            top: 10%;
+            left: -10%;
+        }
+
+        .orb-2 {
+            width: 300px;
+            height: 300px;
+            background: var(--lime);
+            bottom: 10%;
+            right: -5%;
+        }
+
+        /* RESPONSIVE */
+        @media (max-width: 768px) {
+            nav .nav-links {
+                display: none;
+            }
+
+            .products-grid {
+                grid-template-columns: 1fr;
+                gap: 2rem;
+            }
+
+            .contact-grid {
+                flex-direction: column;
+                gap: 2rem;
+            }
+
+            .product-price-row {
+                flex-direction: column;
+                gap: 1rem;
+                align-items: stretch;
+            }
+
+            .buy-btn {
+                width: 100%;
+            }
+        }
+
+        /* Scroll reveal */
+        .reveal {
+            opacity: 0;
+            transform: translateY(30px);
+            transition: all 0.8s ease;
+        }
+
+        .reveal.active {
+            opacity: 1;
+            transform: translateY(0);
+        }
+    </style>
+</head>
+<body>
+
+    <!-- NAVEGACIÓ -->
+    <nav>
+        <div class="nav-brand">novallum</div>
+        <ul class="nav-links">
+            <li><a href="#inici">Inici</a></li>
+            <li><a href="#productes">Productes</a></li>
+            <li><a href="#contacte">Contacte</a></li>
+        </ul>
+    </nav>
+
+    <!-- HERO -->
+    <section class="hero" id="inici">
+        <div class="glow-orb orb-1"></div>
+        <div class="glow-orb orb-2"></div>
+        
+        <div class="hero-content">
+            <div class="logo-container">
+                <div class="logo-icon">
+                    <svg viewBox="0 0 24 24" xmlns="http://www.w3.org/2000/svg">
+                        <path d="M12 2L2 22h20L12 2zm0 4l6.5 13h-13L12 6z"/>
+                        <circle cx="12" cy="16" r="2"/>
+                    </svg>
+                </div>
+            </div>
+            
+            <h1 class="brand-name">novallum</h1>
+            <p class="tagline">
+                <span class="highlight">Sense</span> bateria &nbsp;·&nbsp; <span class="highlight-lime">Sense</span> límits
+            </p>
+            
+            <div class="hero-image">
+                <img src="https://images.unsplash.com/photo-1509391366360-2e959784a276?w=800&q=80" alt="Panell solar tecnològic">
+            </div>
+        </div>
+        
+        <div class="scroll-indicator">Descobreix més</div>
+    </section>
+
+    <!-- CATÀLEG DE PRODUCTES -->
+    <section class="catalog" id="productes">
+        <div class="glow-orb orb-1" style="top: 20%; right: -10%; left: auto; opacity: 0.08;"></div>
+        
+        <h2 class="section-title reveal">
+            <span style="color: var(--neon-blue);">Catàleg</span> <span style="color: var(--lime);">de Productes</span>
+        </h2>
+        <p class="section-subtitle reveal">
+            Fundes intel·ligents amb carrega solar integrada. Tecnologia d'avantguarda per a un estil de vida sostenible.
+        </p>
+        
+        <div class="products-grid">
+            <!-- Producte 1 -->
+            <div class="product-card reveal">
+                <span class="product-badge badge-urban">Per a la ciutat</span>
+                <div class="product-image">
+                    <img src="https://images.unsplash.com/photo-1586105251261-72a756497a11?w=600&q=80" alt="Model Raig Urban">
+                </div>
+                <h3 class="product-name">Raig Urban</h3>
+                <p class="product-desc">
+                    Dissenyada per al dia a dia a la ciutat. És una funda fina, lleugera i feta de bioplàstics reciclats. Ideal per a joves que volen bateria extra sense pesar.
+                </p>
+                <ul class="product-features">
+                    <li>Grosor ultra reduït</li>
+                    <li>Bioplàstic 100% reciclat</li>
+                    <li>Panell solar monocristal·lí integrat</li>
+                    <li>Compatible amb càrrega inductiva</li>
+                </ul>
+                <div class="product-price-row">
+                    <div class="price">45 <span class="price-currency">€</span></div>
+                    <button class="buy-btn buy-btn-urban">Comprar Ara</button>
+                </div>
+            </div>
+            
+            <!-- Producte 2 -->
+            <div class="product-card reveal">
+                <span class="product-badge badge-pro">Tot Terreny</span>
+                <div class="product-image">
+                    <img src="https://images.unsplash.com/photo-1616348436168-de43ad0db179?w=600&q=80" alt="Model SolarShield Pro">
+                </div>
+                <h3 class="product-name">SolarShield Pro</h3>
+                <p class="product-desc">
+                    La funda tot terreny. Té protecció contra colps extrema (grau militar), és impermeable i inclou una bateria interna de 5000mAh per a emmagatzemar l'energia del sol.
+                </p>
+                <ul class="product-features">
+                    <li>Certificació MIL-STD-810G</li>
+                    <li>Resistència IP68 (aigua i pols)</li>
+                    <li>Bateria de reserva de 5000mAh</li>
+                    <li>Panell solar d'alta eficiència</li>
+                </ul>
+                <div class="product-price-row">
+                    <div class="price">70 <span class="price-currency">€</span></div>
+                    <button class="buy-btn buy-btn-pro">Comprar Ara</button>
+                </div>
+            </div>
+        </div>
+    </section>
+
+    <!-- CONTACTE I FINAL -->
+    <section class="contact" id="contacte">
+        <h2 class="contact-slogan reveal">
+            <span>Sense</span> bateria <span class="lime-word">Sense</span> límits
+        </h2>
+        
+        <div class="contact-grid reveal">
+            <div class="contact-item">
+                <div class="contact-icon">✉</div>
+                <span class="contact-label">Email</span>
+                <span class="contact-value">
+                    <a href="mailto:nomallum@gmail.com">nomallum@gmail.com</a>
+                </span>
+            </div>
+            
+            <div class="contact-item">
+                <div class="contact-icon">☎</div>
+                <span class="contact-label">Telèfon</span>
+                <span class="contact-value">
+                    <a href="tel:+34960123456">960 123 456</a><br>
+                    <a href="tel:+34600000000">600 000 000</a>
+                </span>
+            </div>
+        </div>
+        
+        <div class="address-box reveal">
+            <div class="contact-item" style="margin-bottom: 0;">
+                <div class="contact-icon">📍</div>
+                <span class="contact-label">Adreça</span>
+                <span class="contact-value">
+                    Carrer del Sol, Nº 24<br>
+                    Polígon Industrial "La Llúria"<br>
+                    46022 València
+                </span>
+            </div>
+        </div>
+        
+        <div class="footer-bottom reveal">
+            <div class="footer-brand">novallum</div>
+            <p>© 2025 novallum — Cases de Protecció Solar. Tots els drets reservats.</p>
+        </div>
+    </section>
+
+    <script>
+        // Scroll reveal animation
+        const reveals = document.querySelectorAll('.reveal');
+        
+        const revealOnScroll = () => {
+            reveals.forEach(el => {
+                const windowHeight = window.innerHeight;
+                const elementTop = el.getBoundingClientRect().top;
+                const revealPoint = 100;
+                
+                if (elementTop < windowHeight - revealPoint) {
+                    el.classList.add('active');
+                }
+            });
+        };
+        
+        window.addEventListener('scroll', revealOnScroll);
+        window.addEventListener('load', revealOnScroll);
+        
+        // Navbar background on scroll
+        const nav = document.querySelector('nav');
+        window.addEventListener('scroll', () => {
+            if (window.scrollY > 50) {
+                nav.style.background = 'rgba(5, 5, 5, 0.95)';
+            } else {
+                nav.style.background = 'rgba(5, 5, 5, 0.8)';
+            }
+        });
+    </script>
+
+</body>
+</html>
